@@ -1,0 +1,64 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ['17']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10'
+          cache-read-only: false
+          cache-write-only: false
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-35 build-tools;35.0.0'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew 2>/dev/null || true
+
+      - name: Build Debug APK
+        run: gradle assembleDebug --no-daemon --stacktrace
+
+      - name: Find APK
+        id: find-apk
+        run: |
+          APK=$(find app/build -name "*.apk" 2>/dev/null | head -1)
+          if [ -z "$APK" ]; then APK=$(find . -name "*.apk" 2>/dev/null | head -1); fi
+          echo "apk_path=$APK" >> $GITHUB_OUTPUT
+          ls -lh "$APK" || true
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FlyBypass-LSPatch-APK
+          path: ${{ steps.find-apk.outputs.apk_path }}
+          if-no-files-found: error
+
+      - name: Upload mapping Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mapping
+          path: app/build/outputs/mapping/
+          if-no-files-found: ignore
