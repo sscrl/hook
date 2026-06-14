@@ -4,14 +4,29 @@ plugins {
 
 android {
     namespace 'com.fly.bypass'
-    compileSdk 35
+    compileSdk 33
 
     defaultConfig {
         applicationId 'com.fly.bypass'
-        minSdk 23
-        targetSdk 35
+        minSdk 21
+        targetSdk 30
         versionCode 1
         versionName '1.0'
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+        release {
+            minifyEnabled false
+        }
+    }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 }
 
