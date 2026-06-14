@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="Fly Bypass LSPatch"
+        android:label="FlyBypass"
         android:extractNativeLibs="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <meta-data
@@ -9,7 +9,7 @@
             android:value="true" />
         <meta-data
             android:name="xposeddescription"
-            android:value="Bypass VPN/Proxy/SSL checks for com.wer.bdf" />
+            android:value="Bypass VPN/Proxy/SSL for com.wer.bdf" />
         <meta-data
             android:name="xposedminversion"
             android:value="82" />
